@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+###############################################################################
+# Remote control for LXC container.
+# This script goal is to ease the common tasks when controlling LXC containers
+# on a machine.
+#
+# Why this? because is a PITA to constantly type the "--name" option while you
+# *need* it (so it's not an option, it should be a mandatory argument for lxc-*
+# commands)
+#
+# Usage:
+#
+#   lxcited <command>
+#
+# For example:
+#
+#   lxcited start what_a_beautiful_container
+#
+# Get help with:
+#   lxcited help
+#
+#
+# If you want autocomplete, add `source /path/to/lxc.autocomplete.sh`
+# to your bash env (in your .bashrc for example)
+#
+#
+# This piece of software is published under the terms of the WTFPL
+# See: http://www.wtfpl.net/ for more details, but here is its core term:
+#
+#   0. You just DO WHAT THE FUCK YOU WANT TO.
+#
+###############################################################################
+
+##########
+# Checks #
+##########
+# help: check <NAME>         check if the container exists
+function lxc_check() {
+    lxc-ls | grep -qw "$1" && return 1 || return 0
+}
+
+function lxc_name_check() {
+    if [[ -z $1 ]]; then
+        echo "Empty container name, exitted."
+        exit 1
+    fi
+}
+
+function lxc_name_required() {
+    lxc_name_check $1
+    if  lxc_check $1; then
+        echo "No container named '$1' does not exists"
+        exit 1
+    fi
+}
+
+function lxc_template_required() {
+    if [[ -z $1 ]]; then
+        echo "No template name, exitted."
+        exit 1
+    fi
+}
+
+#####################
+# Common operations #
+#####################
+
+# help: init <NAME> <TEMPLATE> create a named container using the right template
+function lxc_init() {
+    lxc_name_check $1
+    lxc_template_required $2
+    name=$1
+    template=$2
+    options=${@:3}
+    lxc-create -t $template -n $name -- $options
+}
+
+# help: destroy <NAME>       delete the named container. use -f if it's still running.
+function lxc_destroy() {
+    lxc_name_required $1
+    options=${@:2}
+    read -p "Are you sure? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        lxc-destroy -n $1 $options
+    fi
+}
+
+# help: start <NAME>         start the named container
+function lxc_start() {
+    lxc_name_required $1
+    if ! lxc-wait -n $1 -s RUNNING -t 0; then
+        lxc-start -n $1 -d
+        lxc-wait -n $1 -s RUNNING
+    fi
+}
+
+# help: attach <NAME>        attach the named container using bash as a default shell
+function lxc_attach() {
+    lxc_name_required $1
+    SHELL=/bin/bash LANG=C lxc-attach -n $1
+}
+
+# help: go <NAME>            start if not ready, and attach to the named container
+function lxc_go() {
+    lxc_start $1
+    lxc_attach $1
+}
+
+# help: stop <NAME>          stop the named container
+function lxc_stop() {
+    lxc_name_required $1
+    lxc-stop -n $1 -t 10
+}
+
+# help: restart <NAME>       stop & start the named container
+function lxc_restart() {
+    lxc_stop $1
+    lxc_start $1
+}
+
+# help: ls                   "fancy" list of available containers
+function lxc_ls() {
+    lxc-ls -f
+}
+
+# help: info <NAME>          give information about the named container
+function lxc_info() {
+    lxc_name_required $1
+    lxc-info --name $1
+}
+
+# help: ip <NAME>            give the IP address of the named container
+function lxc_ip() {
+    lxc_name_required $1
+    lxc-info --name $1 -i
+}
+
+# help: editconfig <NAME>    open $EDITOR for the config file of the named container
+function lxc_editconfig() {
+    lxc_name_required $1
+    $EDITOR /var/lib/lxc/$1/config
+}
+
+# help: help                 displays this help message
+function lxc_help() {
+    echo "Available commands:"
+    sed -n '/^# help:/{s/# help: /  - /;p}' $0
+}
+
+# Check Who am I
+if [ "$(whoami)" != "root" ]; then
+	echo "Sorry, you are not root."
+	exit 1
+fi
+
+# Run help
+[[ -z "${1-}" ]] && lxc_help "$0" && exit
+case $1 in
+	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go) lxc_"$1" "${@:2}" ;;
+    att) lxc_attach "${@:2}" ;;
+    commands) echo start stop ;;
+	*) lxc_help "$0" ;;
+esac

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+_lxc_commands()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="start stop restart attach ls info ip editconfig init destroy help go"
+
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+}
+
+_lxc_arguments() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    case "$prev" in
+        start|stop|restart|attach|info|ip|editconfig|destroy|go)
+            opts="$(lxc-ls | tr -s ' ' | tr '\n' ' ')"
+            COMPREPLY=( $(compgen -W '${opts}' ${cur}) )
+            return 0
+            ;;
+        *)
+            _lxc_commands
+            ;;
+    esac
+}
+complete -o default -F _lxc_arguments lxcited
