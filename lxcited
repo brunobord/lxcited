@@ -34,7 +34,7 @@
 ##########
 # Checks #
 ##########
-# help: check <NAME>         check if the container exists
+# help: check <NAME>                    check if the container exists
 function lxc_check() {
     lxc-ls | grep -qw "$1" && return 1 || return 0
 }
@@ -65,7 +65,7 @@ function lxc_template_required() {
 # Common operations #
 #####################
 
-# help: init <NAME> <TEMPLATE> create a named container using the right template
+# help: init <NAME> <TEMPLATE>          create a named container using the right template
 function lxc_init() {
     lxc_name_check $1
     lxc_template_required $2
@@ -75,7 +75,7 @@ function lxc_init() {
     lxc-create -t $template -n $name -- $options
 }
 
-# help: destroy <NAME>       delete the named container. use -f if it's still running.
+# help: destroy <NAME>                  delete the named container. use -f if it's still running.
 function lxc_destroy() {
     lxc_name_required $1
     options=${@:2}
@@ -86,7 +86,7 @@ function lxc_destroy() {
     fi
 }
 
-# help: start <NAME>         start the named container
+# help: start <NAME>                    start the named container
 function lxc_start() {
     lxc_name_required $1
     if ! lxc-wait -n $1 -s RUNNING -t 0; then
@@ -95,54 +95,64 @@ function lxc_start() {
     fi
 }
 
-# help: attach <NAME>        attach the named container using bash as a default shell
+# help: attach <NAME>                   attach the named container using bash as a default shell
 function lxc_attach() {
     lxc_name_required $1
     SHELL=/bin/bash LANG=C lxc-attach -n $1
 }
 
-# help: go <NAME>            start if not ready, and attach to the named container
+# help: go <NAME>                       start if not ready, and attach to the named container
 function lxc_go() {
     lxc_start $1
     lxc_attach $1
 }
 
-# help: stop <NAME>          stop the named container
+# help: stop <NAME>                     stop the named container
 function lxc_stop() {
     lxc_name_required $1
     lxc-stop -n $1 -t 10
 }
 
-# help: restart <NAME>       stop & start the named container
+# help: restart <NAME>                  stop & start the named container
 function lxc_restart() {
     lxc_stop $1
     lxc_start $1
 }
 
-# help: ls                   "fancy" list of available containers
+# help: ls                              "fancy" list of available containers
 function lxc_ls() {
     lxc-ls -f
 }
 
-# help: info <NAME>          give information about the named container
+# help: info <NAME>                     give information about the named container
 function lxc_info() {
     lxc_name_required $1
     lxc-info --name $1
 }
 
-# help: ip <NAME>            give the IP address of the named container
+# help: ip <NAME>                       give the IP address of the named container
 function lxc_ip() {
     lxc_name_required $1
     lxc-info --name $1 -i
 }
 
-# help: editconfig <NAME>    open $EDITOR for the config file of the named container
+# help: editconfig <NAME>               open $EDITOR for the config file of the named container
 function lxc_editconfig() {
     lxc_name_required $1
     $EDITOR /var/lib/lxc/$1/config
 }
 
-# help: help                 displays this help message
+# help: push <NAME> <source> [<target>] copy the source file to the target path in the named container.
+function lxc_push() {
+    lxc_name_required $1
+    source_file=$2
+    target_file=$3
+    target_file=${target_file#/}
+    target_path=/var/lib/lxc/$1/rootfs/$target_file
+    cp $source_file $target_path
+}
+
+# help: help                            displays this help message
 function lxc_help() {
     echo "Available commands:"
     sed -n '/^# help:/{s/# help: /  - /;p}' $0
@@ -157,7 +167,7 @@ fi
 # Run help
 [[ -z "${1-}" ]] && lxc_help "$0" && exit
 case $1 in
-	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go) lxc_"$1" "${@:2}" ;;
+	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push) lxc_"$1" "${@:2}" ;;
     att) lxc_attach "${@:2}" ;;
     commands) echo start stop ;;
 	*) lxc_help "$0" ;;

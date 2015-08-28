@@ -5,7 +5,7 @@ _lxc_commands()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="start stop restart attach ls info ip editconfig init destroy help go"
+    opts="start stop restart attach ls info ip editconfig init destroy help go push"
 
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
@@ -15,7 +15,7 @@ _lxc_arguments() {
     local prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     case "$prev" in
-        start|stop|restart|attach|info|ip|editconfig|destroy|go)
+        start|stop|restart|attach|info|ip|editconfig|destroy|go|push)
             opts="$(lxc-ls | tr -s ' ' | tr '\n' ' ')"
             COMPREPLY=( $(compgen -W '${opts}' ${cur}) )
             return 0
