@@ -34,8 +34,6 @@
 ##########
 # Checks #
 ##########
-# help: check <NAME>
-# help:        check if the container exists
 function lxc_check() {
     lxc-ls | grep -qw "$1" && return 1 || return 0
 }
