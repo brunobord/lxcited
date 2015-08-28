@@ -34,7 +34,6 @@
 ##########
 # Checks #
 ##########
-# help: check <NAME>                    check if the container exists
 function lxc_check() {
     lxc-ls | grep -qw "$1" && return 1 || return 0
 }
@@ -65,7 +64,9 @@ function lxc_template_required() {
 # Common operations #
 #####################
 
-# help: init <NAME> <TEMPLATE>          create a named container using the right template
+# help: init <NAME> <TEMPLATE>
+# help:        create a named container using the right template
+# help:
 function lxc_init() {
     lxc_name_check $1
     lxc_template_required $2
@@ -75,7 +76,9 @@ function lxc_init() {
     lxc-create -t $template -n $name -- $options
 }
 
-# help: destroy <NAME>                  delete the named container. use -f if it's still running.
+# help: destroy <NAME>
+# help:        delete the named container. use -f if it's still running.
+# help:
 function lxc_destroy() {
     lxc_name_required $1
     options=${@:2}
@@ -86,7 +89,9 @@ function lxc_destroy() {
     fi
 }
 
-# help: start <NAME>                    start the named container
+# help: start <NAME>
+# help:        start the named container
+# help:
 function lxc_start() {
     lxc_name_required $1
     if ! lxc-wait -n $1 -s RUNNING -t 0; then
@@ -95,54 +100,73 @@ function lxc_start() {
     fi
 }
 
-# help: attach <NAME>                   attach the named container using bash as a default shell
+# help: attach <NAME>
+# help:        attach the named container using bash as a default shell
+# help:
 function lxc_attach() {
     lxc_name_required $1
     SHELL=/bin/bash LANG=C lxc-attach -n $1
 }
 
-# help: go <NAME>                       start if not ready, and attach to the named container
+# help: go <NAME>
+# help:        start if not ready, and attach to the named container
+# help:
 function lxc_go() {
     lxc_start $1
     lxc_attach $1
 }
 
-# help: stop <NAME>                     stop the named container
+# help: stop <NAME>
+# help:        stop the named container
+# help:
 function lxc_stop() {
     lxc_name_required $1
     lxc-stop -n $1 -t 10
 }
 
-# help: restart <NAME>                  stop & start the named container
+# help: restart <NAME>
+# help:        stop & start the named container
+# help:
 function lxc_restart() {
     lxc_stop $1
     lxc_start $1
 }
 
-# help: ls                              "fancy" list of available containers
+# help: ls
+# help:        "fancy" list of available containers
+# help:
 function lxc_ls() {
     lxc-ls -f
 }
 
-# help: info <NAME>                     give information about the named container
+# help: info <NAME>
+# help:        give information about the named container
+# help:
 function lxc_info() {
     lxc_name_required $1
     lxc-info --name $1
 }
 
-# help: ip <NAME>                       give the IP address of the named container
+# help: ip <NAME>
+# help:        give the IP address of the named container
+# help:
 function lxc_ip() {
     lxc_name_required $1
     lxc-info --name $1 -i
 }
 
-# help: editconfig <NAME>               open $EDITOR for the config file of the named container
+# help: editconfig <NAME>
+# help:        open $EDITOR for the config file of the named container
+# help:
 function lxc_editconfig() {
     lxc_name_required $1
     $EDITOR /var/lib/lxc/$1/config
 }
 
-# help: push <NAME> <source> [<target>] copy the source file to the target path in the named container.
+# help: push <NAME> <source> [<target>]
+# help:        copy the source file to the target path in the named container.
+# help:        target path are relative to the `rootfs`. if `target` is omitted, the file will be pushed at the "/" of the container.
+# help:
 function lxc_push() {
     lxc_name_required $1
     source_file=$2
@@ -152,10 +176,12 @@ function lxc_push() {
     cp $source_file $target_path
 }
 
-# help: help                            displays this help message
+# help: help
+# help:        displays this help message
 function lxc_help() {
     echo "Available commands:"
-    sed -n '/^# help:/{s/# help: /  - /;p}' $0
+    echo ""
+    sed -n '/^# help:/{s/# help:/   /;p}' $0
 }
 
 # Check Who am I
