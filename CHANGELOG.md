@@ -4,11 +4,12 @@
 
 ### New commands
 
-* `push`: to copy a file into your container (#1)
+* `push`: to copy a file into your container (#1).
 
 ### Other niceties
 
-* `help` function has been revamped & multiline help text for more information and readability,
+* `help` function has been revamped & multiline help text for more information and readability (#4),
+* `help` function now accepts a ``[command]`` argument, to get help on a specific command (#7),
 * removed `check` from help. It has never been a command in the first place.
 
 ## v1.0 (2015-08-26)

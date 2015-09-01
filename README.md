@@ -40,6 +40,13 @@ Get help with:
 lxcited help
 ```
 
+For more help on a specific command, simply type:
+
+```sh
+lxcited help destroy
+```
+
+
 ### Autocomplete
 
 You can autocomplete commands:
