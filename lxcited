@@ -179,7 +179,25 @@ function lxc_share() {
     # Add it to the end
     echo "$line" >> $config
     echo "Done."
-    echo "Warning: to activate the share, you'll need to restart the container"
+    echo "Warning: this change needs a restart to be taken into account"
+}
+
+# help: unshare <NAME> <source path> unmount the shared directory on your container.
+# help:unshare *WARNING* you'll have to restart your container to take this unshare into account.
+function lxc_unshare() {
+    lxc_name_required $1
+    source_path=$2
+    # Mandatory argument
+    if [[ -z $source_path ]]; then
+        echo "'source path' argument is mandatory."
+        exit 1
+    fi
+    config=/var/lib/lxc/$1/config
+    source_prefix="lxc.mount.entry = $source_path"
+    # Delete the previous share
+    sed -i "\|${source_prefix} |d" $config
+    echo "Done."
+    echo "Warning: this change needs a restart to be taken into account"
 }
 
 # help: help [command] displays this help message or help for the designated command
@@ -209,7 +227,7 @@ fi
 # Run help
 [[ -z "${1-}" ]] && lxc_help "$0" && exit
 case $1 in
-	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push|share) lxc_"$1" "${@:2}" ;;
+	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push|share|unshare) lxc_"$1" "${@:2}" ;;
     att) lxc_attach "${@:2}" ;;
     commands) echo start stop ;;
 	*) lxc_help "$2" ;;

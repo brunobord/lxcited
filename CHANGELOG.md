@@ -6,6 +6,7 @@
 
 * `push`: to copy a file into your container (#1),
 * `share`: to share a directory via lxc.mount (#2).
+* `unshare`: to unshare a directory previously mounted (#3).
 
 ### Other niceties
 
