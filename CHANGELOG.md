@@ -4,7 +4,8 @@
 
 ### New commands
 
-* `push`: to copy a file into your container (#1).
+* `push`: to copy a file into your container (#1),
+* `share`: to share a directory via lxc.mount (#2).
 
 ### Other niceties
 

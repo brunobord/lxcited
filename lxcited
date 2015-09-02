@@ -153,6 +153,35 @@ function lxc_push() {
     cp $source_file $target_path
 }
 
+# help: share <NAME> <source path> <target path> mount a shared directory on your container.
+# help:share *WARNING* you'll have to restart your container to have the shared directory activated.
+function lxc_share() {
+    lxc_name_required $1
+    source_path=$2
+    target_path=$3
+    target_path=${target_path#/}
+    # Mandatory arguments
+    if [[ -z $source_path ]]; then
+        echo "'source path' argument is mandatory."
+        exit 1
+    fi
+    if [[ -z $target_path ]]; then
+        echo "'target path' argument is mandatory."
+        exit 1
+    fi
+    config=/var/lib/lxc/$1/config
+    options=${@:4}
+    options="${options:-none defaults,bind,uid=0,create=dir 0 0}"
+    source_prefix="lxc.mount.entry = $source_path"
+    line="$source_prefix $target_path $options"
+    # Delete the previous share
+    sed -i "\|${source_prefix} |d" $config
+    # Add it to the end
+    echo "$line" >> $config
+    echo "Done."
+    echo "Warning: to activate the share, you'll need to restart the container"
+}
+
 # help: help [command] displays this help message or help for the designated command
 function lxc_help() {
     if [[ -z $1 ]]; then
@@ -180,7 +209,7 @@ fi
 # Run help
 [[ -z "${1-}" ]] && lxc_help "$0" && exit
 case $1 in
-	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push) lxc_"$1" "${@:2}" ;;
+	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push|share) lxc_"$1" "${@:2}" ;;
     att) lxc_attach "${@:2}" ;;
     commands) echo start stop ;;
 	*) lxc_help "$2" ;;
