@@ -1,6 +1,6 @@
 # lxcited changelog
 
-## master (unreleased)
+## v2.0 (2015-09-02)
 
 ### New commands
 
