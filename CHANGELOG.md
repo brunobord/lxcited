@@ -7,7 +7,8 @@
 * `push`: to copy a file into your container (#1),
 * `share`: to share a directory via lxc.mount (#2).
 * `unshare`: to unshare a directory previously mounted (#3),
-* `stop all`: to stop all running containers (#6).
+* `stop all`: to stop all running containers (#6),
+* `exec`: to run commands in a running container (#8).
 
 ### Other niceties
 

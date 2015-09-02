@@ -60,6 +60,19 @@ function lxc_template_required() {
     fi
 }
 
+
+function lxc_name_running_check() {
+    lxc-ls --running | grep -qw "$1" && return 1 || return 0
+}
+
+function lxc_name_running_required() {
+    lxc_name_check $1
+    if  lxc_name_running_check $1; then
+        echo "The container '$1' is not running"
+        exit 1
+    fi
+}
+
 #####################
 # Common operations #
 #####################
@@ -212,6 +225,20 @@ function lxc_unshare() {
     echo "Warning: this change needs a restart to be taken into account"
 }
 
+# help: exec <NAME> <command> run a command on the designated running container
+# help:exec note: the command doesn't have to be interactive or not.
+# help:exec If you're prompted, you'll keep the ability to answer.
+function lxc_exec() {
+    lxc_name_running_required $1
+    cmd=${@:2}
+    # Mandatory argument
+    if [[ -z $cmd ]]; then
+        echo "the 'command' argument is mandatory."
+        exit 1
+    fi
+    lxc-attach -n $1 -- $cmd
+}
+
 # help: help [command] displays this help message or help for the designated command
 function lxc_help() {
     if [[ -z $1 ]]; then
@@ -239,7 +266,7 @@ fi
 # Run help
 [[ -z "${1-}" ]] && lxc_help "$1" && exit
 case $1 in
-	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push|share|unshare) lxc_"$1" "${@:2}" ;;
+	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push|share|unshare|exec) lxc_"$1" "${@:2}" ;;
     att) lxc_attach "${@:2}" ;;
 	*) lxc_help "$2" ;;
 esac
