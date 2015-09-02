@@ -93,6 +93,7 @@ function lxc_start() {
         lxc-start -n $1 -d
         lxc-wait -n $1 -s RUNNING
     fi
+    echo "Started $1"
 }
 
 # help: attach <NAME> attach the named container using bash as a default shell
@@ -108,9 +109,20 @@ function lxc_go() {
 }
 
 # help: stop <NAME> stop the named container
+# help:stop if you run the command "stop all", it will stop all running containers
 function lxc_stop() {
-    lxc_name_required $1
-    lxc-stop -n $1 -t 10
+    if [[ $1 == "all" ]]
+    then
+        for container in `lxc-ls --running`
+        do
+            lxc-stop -n $container -t 10
+            echo "Stopped $container"
+        done
+    else
+        lxc_name_required $1
+        lxc-stop -n $1 -t 10
+        echo "Stopped $1"
+    fi
 }
 
 # help: restart <NAME> stop & start the named container
