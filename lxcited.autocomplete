@@ -5,7 +5,7 @@ _lxc_commands()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="start stop restart attach ls info ip editconfig init destroy help go push share unshare"
+    opts="start stop restart attach ls info ip editconfig init destroy go push share unshare"
 
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
