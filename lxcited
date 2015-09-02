@@ -225,10 +225,9 @@ if [ "$(whoami)" != "root" ]; then
 fi
 
 # Run help
-[[ -z "${1-}" ]] && lxc_help "$0" && exit
+[[ -z "${1-}" ]] && lxc_help "$1" && exit
 case $1 in
 	start|stop|restart|attach|ls|info|ip|editconfig|init|destroy|go|push|share|unshare) lxc_"$1" "${@:2}" ;;
     att) lxc_attach "${@:2}" ;;
-    commands) echo start stop ;;
 	*) lxc_help "$2" ;;
 esac
