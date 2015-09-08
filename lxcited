@@ -162,9 +162,17 @@ function lxc_ip() {
 }
 
 # help: editconfig <NAME> open $EDITOR for the config file of the named container
+# help:editconfig *WARNING* any modification in your config file will only be taken into account when you'll restart you container.
+# help:editconfig *OR* use the --restart option to explicitely restart your container right after you closed your editor.
 function lxc_editconfig() {
     lxc_name_required $1
     $EDITOR /var/lib/lxc/$1/config
+    options=${@:2}
+    if [[ $options == *"--restart"* ]]; then
+        lxc_restart $1;
+    else
+        echo "Warning: any change will need a restart to be taken into account"
+    fi
 }
 
 # help: push <NAME> <source> [<target>] copy the source file to the target path in the named container.
@@ -180,6 +188,7 @@ function lxc_push() {
 
 # help: share <NAME> <source path> <target path> mount a shared directory on your container.
 # help:share *WARNING* you'll have to restart your container to have the shared directory activated.
+# help:share *OR* use the --restart option to explicitely restart your container immediately after this command.
 function lxc_share() {
     lxc_name_required $1
     source_path=$2
@@ -221,6 +230,7 @@ function lxc_share() {
 
 # help: unshare <NAME> <source path> unmount the shared directory on your container.
 # help:unshare *WARNING* you'll have to restart your container to take this unshare into account.
+# help:unshare *OR* use the --restart option to explicitely restart your container immediately after this command.
 function lxc_unshare() {
     lxc_name_required $1
     source_path=$2
