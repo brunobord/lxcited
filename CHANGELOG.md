@@ -5,6 +5,7 @@
 ## Feature(s)
 
 * Contextual autocompletion: commands to be executed on a running container only list running containers when trying to autocomplete. Same for commands like `start` to be executed only on stopped containers. Neutral commands will list all available containers
+* Contextual autocomplete: autocompletion for `stop` command adds the `all` option.
 
 ## v2.0 (2015-09-02)
 

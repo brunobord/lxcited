@@ -34,6 +34,9 @@ _lxc_arguments() {
         stop|attach|ip|exec)
             # List only running containers
             opts="$(${ls_running} | tr -s ' ' | tr '\n' ' ')"
+            if [ "$prev" == "stop" ]; then
+                opts="${opts} all"
+            fi
             COMPREPLY=( $(compgen -W '${opts}' ${cur}) )
             return 0
             ;;
