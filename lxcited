@@ -196,6 +196,14 @@ function lxc_share() {
     fi
     config=/var/lib/lxc/$1/config
     options=${@:4}
+
+    # Check for restart
+    restart=false
+    if [[ $options == *"--restart"* ]]; then
+        restart=true
+        options="${options/--restart/}"
+    fi
+    # revamp options if needed
     options="${options:-none defaults,bind,uid=0,create=dir 0 0}"
     source_prefix="lxc.mount.entry = $source_path"
     line="$source_prefix $target_path $options"
@@ -203,8 +211,12 @@ function lxc_share() {
     sed -i "\|${source_prefix} |d" $config
     # Add it to the end
     echo "$line" >> $config
-    echo "Done."
-    echo "Warning: this change needs a restart to be taken into account"
+    echo "Shared ${source_path}."
+    if [[ $restart == true ]]; then
+        lxc_restart $1
+    else
+        echo "Warning: this change needs a restart to be taken into account"
+    fi
 }
 
 # help: unshare <NAME> <source path> unmount the shared directory on your container.
@@ -217,12 +229,23 @@ function lxc_unshare() {
         echo "'source path' argument is mandatory."
         exit 1
     fi
+    # Check for restart
+    options=${@:3}
+    restart=false
+    if [[ $options == *"--restart"* ]]; then
+        restart=true
+        options="${options/--restart//}"
+    fi
     config=/var/lib/lxc/$1/config
     source_prefix="lxc.mount.entry = $source_path"
     # Delete the previous share
     sed -i "\|${source_prefix} |d" $config
-    echo "Done."
-    echo "Warning: this change needs a restart to be taken into account"
+    echo "Unshared ${source_path}."
+    if [[ $restart == "true" ]]; then
+        lxc_restart $1
+    else
+        echo "Warning: this change needs a restart to be taken into account"
+    fi
 }
 
 # help: exec <NAME> <command> run a command on the designated running container
