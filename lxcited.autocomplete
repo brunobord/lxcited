@@ -14,10 +14,31 @@ _lxc_arguments() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
     local prev="${COMP_WORDS[COMP_CWORD-1]}"
 
+    ls_running="lxc-ls --running"
+    ls_stopped="lxc-ls --stopped"
+    ls="lxc-ls"
+
     case "$prev" in
-        start|stop|restart|attach|info|ip|editconfig|destroy|go|push|share|unshare|exec)
-            opts="$(lxc-ls | tr -s ' ' | tr '\n' ' ')"
+        start)
+            # List only stopped containers
+            opts="$(${ls_stopped} | tr -s ' ' | tr '\n' ' ')"
             COMPREPLY=( $(compgen -W '${opts}' ${cur}) )
+            return 0
+            ;;
+        restart|info|editconfig|destroy|go|push|share|unshare)
+            # Neutral container list
+            opts="$(${ls} | tr -s ' ' | tr '\n' ' ')"
+            COMPREPLY=( $(compgen -W '${opts}' ${cur}) )
+            return 0
+            ;;
+        stop|attach|ip|exec)
+            # List only running containers
+            opts="$(${ls_running} | tr -s ' ' | tr '\n' ' ')"
+            COMPREPLY=( $(compgen -W '${opts}' ${cur}) )
+            return 0
+            ;;
+        ls|init)
+            # No completion, this command has no argument
             return 0
             ;;
         *)
