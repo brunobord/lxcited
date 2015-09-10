@@ -179,7 +179,7 @@ function lxc_editconfig() {
 # help:push target path are relative to the `rootfs`. if `target` is omitted, the file will be pushed at the "/" of the container.
 function lxc_push() {
     lxc_name_required $1
-    source_file=$2
+    source_file=`readlink -f $2`
     target_file=$3
     target_file=${target_file#/}
     target_path=/var/lib/lxc/$1/rootfs/$target_file
@@ -191,7 +191,7 @@ function lxc_push() {
 # help:share *OR* use the --restart option to explicitely restart your container immediately after this command.
 function lxc_share() {
     lxc_name_required $1
-    source_path=$2
+    source_path=`readlink -f $2`
     target_path=$3
     target_path=${target_path#/}
     # Mandatory arguments
@@ -233,7 +233,7 @@ function lxc_share() {
 # help:unshare *OR* use the --restart option to explicitely restart your container immediately after this command.
 function lxc_unshare() {
     lxc_name_required $1
-    source_path=$2
+    source_path=`readlink -f $2`
     # Mandatory argument
     if [[ -z $source_path ]]; then
         echo "'source path' argument is mandatory."
