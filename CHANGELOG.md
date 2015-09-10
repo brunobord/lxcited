@@ -7,6 +7,7 @@
 * Contextual autocompletion: commands to be executed on a running container only list running containers when trying to autocomplete. Same for commands like `start` to be executed only on stopped containers. Neutral commands will list all available containers (#10)
 * Contextual autocomplete: autocompletion for `stop` command adds the `all` option.
 * Option for ``share``, ``unshare``, ``editconfig``: use the ``--restart`` option to restart your container right after the end of the command (#9)
+* Resolve relative source paths in ``push``, ``share``, ``unshare``
 
 ## v2.0 (2015-09-02)
 
