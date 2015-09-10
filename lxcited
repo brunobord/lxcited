@@ -184,6 +184,7 @@ function lxc_push() {
     target_file=${target_file#/}
     target_path=/var/lib/lxc/$1/rootfs/$target_file
     cp $source_file $target_path
+    echo "${source_file} copied into $1"
 }
 
 # help: share <NAME> <source path> <target path> mount a shared directory on your container.
@@ -220,7 +221,7 @@ function lxc_share() {
     sed -i "\|${source_prefix} |d" $config
     # Add it to the end
     echo "$line" >> $config
-    echo "Shared ${source_path}."
+    echo "Shared '${source_path}'."
     if $restart; then
         lxc_restart $1
     else
@@ -250,7 +251,7 @@ function lxc_unshare() {
     source_prefix="lxc.mount.entry = $source_path"
     # Delete the previous share
     sed -i "\|${source_prefix} |d" $config
-    echo "Unshared ${source_path}."
+    echo "Unshared '${source_path}'."
     if $restart; then
         lxc_restart $1
     else
