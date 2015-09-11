@@ -1,6 +1,6 @@
 # lxcited changelog
 
-## master (unreleased)
+## v2.1 (2015-09-11)
 
 ## Features
 
