@@ -19,6 +19,23 @@ It's a manual install. Don't worry, there aren't any hard step.
 source /path/to/lxcited.autocomplete
 ```
 
+### Trust me on this
+
+This will install the latest master version of lxcited in your home environment.
+
+```sh
+mkdir -p ~/bin
+curl -o ~/bin/lxcited https://raw.githubusercontent.com/brunobord/lxcited/master/lxcited
+curl -o ~/bin/lxcited.autocomplete https://raw.githubusercontent.com/brunobord/lxcited/master/lxcited.autocomplete
+chmod +x ~/bin/lxcited
+echo '# LXCITED' >> .bashrc
+echo 'export PATH=$HOME/bin/:$PATH' >> .bashrc
+echo 'source $HOME/bin/lxcited.autocomplete' >> .bashrc
+```
+
+Next time you'll run "source .bashrc" (manually or when you'll log in), `lxcited` will be available.
+
+If you want to simply update, just re-rerun the two cURL commands.
 
 ## Usage
 
