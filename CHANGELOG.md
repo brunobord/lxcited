@@ -2,7 +2,7 @@
 
 ## master
 
-- Documentation: How to install this, trust me.
+- Documentation: How to install this, trust me. How to install this for ``sudo`` usage.
 
 ## v2.1 (2015-09-11)
 

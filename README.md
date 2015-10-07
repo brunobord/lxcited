@@ -63,7 +63,6 @@ For more help on a specific command, simply type:
 lxcited help destroy
 ```
 
-
 ### Autocomplete
 
 You can autocomplete commands:
@@ -81,6 +80,16 @@ $ lxcited start deb<TAB><TAB>
 debian1 debian2 deborah
 $ lxcited start deb
 ```
+
+### Use lxcited along with `sudo`
+
+For some reasons, when the `lxcited` executable is located in you ``~/bin`` or in some other custom path, ``sudo`` can't reach it and you can't run:
+
+```sh
+sudo lxcited
+```
+
+If you want to be able to run lxcited with ``sudo``, instead of installing it in a custom path, you can copy or symlink your file in ``/usr/local/bin`` or any other "well-known path" that will fit the ``sudo`` command.
 
 ## License
 
