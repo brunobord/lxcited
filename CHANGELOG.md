@@ -1,6 +1,6 @@
 # lxcited changelog
 
-# master
+# v2.2.1 (2017-07-07)
 
 - ``restart`` can restart several containers at once.
 
