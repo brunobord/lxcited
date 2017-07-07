@@ -1,5 +1,9 @@
 # lxcited changelog
 
+# master
+
+- ``restart`` can restart several containers at once.
+
 ## v2.2 (2017-07-07)
 
 - Documentation: How to install this, trust me. How to install this for ``sudo`` usage.

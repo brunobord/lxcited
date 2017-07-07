@@ -99,7 +99,7 @@ function lxc_destroy() {
     fi
 }
 
-# help: start <NAME> [<NAME>... ] start the named container
+# help: start <NAME> [<NAME>... ] start the named container(s)
 function lxc_start() {
     containers=${@:1}
     for container in $containers
@@ -126,7 +126,7 @@ function lxc_go() {
     lxc_attach $1
 }
 
-# help: stop <NAME> [<NAME>...] stop the named container
+# help: stop <NAME> [<NAME>...] stop the named container(s)
 # help:stop if you run the command "stop all", it will stop all running containers
 function lxc_stop() {
     if [[ $1 == "all" ]]
@@ -147,10 +147,14 @@ function lxc_stop() {
     fi
 }
 
-# help: restart <NAME> stop & start the named container
+# help: restart <NAME> [<NAME>...] stop & start the named container(s)
 function lxc_restart() {
-    lxc_stop $1
-    lxc_start $1
+    containers=${@:1}
+    for container in $containers
+    do
+        lxc_stop $container
+        lxc_start $container
+    done
 }
 
 # help: ls "fancy" list of available containers
