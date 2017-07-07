@@ -99,14 +99,19 @@ function lxc_destroy() {
     fi
 }
 
-# help: start <NAME> start the named container
+# help: start <NAME> [<NAME>... ] start the named container
 function lxc_start() {
-    lxc_name_required $1
-    if ! lxc-wait -n $1 -s RUNNING -t 0; then
-        lxc-start -n $1 -d
-        lxc-wait -n $1 -s RUNNING
-    fi
-    echo "Started $1"
+    containers=${@:1}
+    for container in $containers
+    do
+        lxc_name_required $container
+        if ! lxc-wait -n $container -s RUNNING -t 0; then
+            lxc-start -n $container -d
+            lxc-wait -n $container -s RUNNING
+        fi
+        echo "Started $container"
+    done
+
 }
 
 # help: attach <NAME> attach the named container using bash as a default shell
