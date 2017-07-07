@@ -1,6 +1,6 @@
 # lxcited changelog
 
-## master
+## v2.2 (2017-07-07)
 
 - Documentation: How to install this, trust me. How to install this for ``sudo`` usage.
 - ``start`` command can start several containers at once.
