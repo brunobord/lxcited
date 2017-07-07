@@ -4,6 +4,7 @@
 
 - Documentation: How to install this, trust me. How to install this for ``sudo`` usage.
 - ``start`` command can start several containers at once.
+- ``stop`` command can stop several containers at once.
 
 ## v2.1 (2015-09-11)
 

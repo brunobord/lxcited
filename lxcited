@@ -126,7 +126,7 @@ function lxc_go() {
     lxc_attach $1
 }
 
-# help: stop <NAME> stop the named container
+# help: stop <NAME> [<NAME>...] stop the named container
 # help:stop if you run the command "stop all", it will stop all running containers
 function lxc_stop() {
     if [[ $1 == "all" ]]
@@ -137,9 +137,13 @@ function lxc_stop() {
             echo "Stopped $container"
         done
     else
-        lxc_name_required $1
-        lxc-stop -n $1 -t 10
-        echo "Stopped $1"
+        containers=${@:1}
+        for container in $containers
+        do
+            lxc_name_required $container
+            lxc-stop -n $container -t 10
+            echo "Stopped $container"
+        done
     fi
 }
 
