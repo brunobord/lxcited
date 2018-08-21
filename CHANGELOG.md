@@ -1,6 +1,10 @@
 # lxcited changelog
 
-# v2.2.1 (2017-07-07)
+# master (unreleased)
+
+- Better argument description and error messages for ``share`` and ``unshare``.
+
+## v2.2.1 (2017-07-07)
 
 - ``restart`` can restart several containers at once.
 

@@ -200,7 +200,7 @@ function lxc_push() {
     echo "${source_file} copied into $1"
 }
 
-# help: share <NAME> <source path> <target path> mount a shared directory on your container.
+# help: share <NAME> <local source path> <lxc target path> mount a shared directory on your container.
 # help:share *WARNING* you'll have to restart your container to have the shared directory activated.
 # help:share *OR* use the --restart option to explicitely restart your container immediately after this command.
 function lxc_share() {
@@ -210,11 +210,11 @@ function lxc_share() {
     target_path=${target_path#/}
     # Mandatory arguments
     if [[ -z $source_path ]]; then
-        echo "'source path' argument is mandatory."
+        echo "'local source path' argument is mandatory and should exist."
         exit 1
     fi
     if [[ -z $target_path ]]; then
-        echo "'target path' argument is mandatory."
+        echo "'lxc target path' argument is mandatory."
         exit 1
     fi
     config=/var/lib/lxc/$1/config
@@ -242,7 +242,7 @@ function lxc_share() {
     fi
 }
 
-# help: unshare <NAME> <source path> unmount the shared directory on your container.
+# help: unshare <NAME> <local source path> unmount the shared directory on your container.
 # help:unshare *WARNING* you'll have to restart your container to take this unshare into account.
 # help:unshare *OR* use the --restart option to explicitely restart your container immediately after this command.
 function lxc_unshare() {
@@ -250,7 +250,7 @@ function lxc_unshare() {
     source_path=`readlink -f $2`
     # Mandatory argument
     if [[ -z $source_path ]]; then
-        echo "'source path' argument is mandatory."
+        echo "'local source path' argument is mandatory and should exist."
         exit 1
     fi
     # Check for restart
